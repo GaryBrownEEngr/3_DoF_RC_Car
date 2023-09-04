@@ -9,14 +9,13 @@
 #include "crsf.h"
 #include "motor_control.h"
 
-
+#define Battery_Sensor_Pin (A6)
+#define Buzzer_Pin (10)
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
 void setup() {
-  pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, LOW);
-
   gen_elrs_crc8();
+  pinMode(Buzzer_Pin, OUTPUT);
 
   pwm.begin();
   pwm.setOscillatorFrequency(27000000);
@@ -54,6 +53,15 @@ void test_packet_finder(){
 }
 */
 
+bool is_battery_low() {
+  uint16_t adc = analogRead(Battery_Sensor_Pin);
+  float battery_voltage = adc * (5.0f / 1023.0f);
+
+  bool is_low = battery_voltage < 3.3f;
+  return is_low;
+}
+
+
 void loop() {
   // wheel_speeds_t motor_cmd;
   // motor_cmd.left_front=0;
@@ -82,6 +90,16 @@ void loop() {
       search_for_packet(&packet_finder, in);
     }
 
+
+    if(motor_cmd.left_front == 0 && motor_cmd.left_rear == 0 && motor_cmd.right_front == 0 && motor_cmd.right_rear == 0 
+    && is_battery_low()){
+      tone(Buzzer_Pin, 300);
+      delay(250);
+      tone(Buzzer_Pin, 200);
+      delay(250);
+      noTone(Buzzer_Pin);
+      delay(500);
+    }
     
     uint32_t new_time = millis();
     if( new_time > last_motor_update_time + 10){
@@ -105,7 +123,7 @@ void loop() {
       // Serial.print(", ");
       // Serial.println(yaw);
 
-      wheel_speeds_t motor_cmd = compute_motor_speeds(pitch, roll, yaw);
+      motor_cmd = compute_motor_speeds(pitch, roll, yaw);
 
       // Serial.print(motor_cmd.left_front);
       // Serial.print(", ");

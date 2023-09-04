@@ -25,10 +25,10 @@ wheel_speeds_t compute_motor_speeds(int16_t pitch, int16_t roll, int16_t yaw) {
   }
   
   wheel_speeds_t ret;
-  ret.left_front  = pitch + roll + yaw;
-  ret.left_rear   = pitch - roll + yaw;
-  ret.right_front = pitch - roll - yaw;
-  ret.right_rear  = pitch + roll - yaw;
+  ret.left_front  = pitch + roll - yaw;
+  ret.left_rear   = pitch - roll - yaw;
+  ret.right_front = pitch - roll + yaw;
+  ret.right_rear  = pitch + roll + yaw;
   
   return ret;
 }
@@ -36,35 +36,35 @@ wheel_speeds_t compute_motor_speeds(int16_t pitch, int16_t roll, int16_t yaw) {
 
 void set_motor_speeds(Adafruit_PWMServoDriver pwm, wheel_speeds_t in) {
   if(in.left_front >= 0){
-    pwm.setPWM(13, 0, map(in.left_front, 0, 800, 0, 4096));
+    pwm.setPWM(13, 0, map(in.left_front, 0, 800, 0, 4095));
     pwm.setPWM(12, 0, 0);
   }else{
     pwm.setPWM(13, 0, 0);
-    pwm.setPWM(12, 0, map(-in.left_front, 0, 800, 0, 4096));
+    pwm.setPWM(12, 0, map(-in.left_front, 0, 800, 0, 4095));
   }
 
   if(in.left_rear >= 0){
-    pwm.setPWM(15, 0, map(in.left_rear, 0, 800, 0, 4096));
+    pwm.setPWM(15, 0, map(in.left_rear, 0, 800, 0, 4095));
     pwm.setPWM(14, 0, 0);
   }else{
     pwm.setPWM(15, 0, 0);
-    pwm.setPWM(14, 0, map(-in.left_rear, 0, 800, 0, 4096));
+    pwm.setPWM(14, 0, map(-in.left_rear, 0, 800, 0, 4095));
   }
 
   if(in.right_front >= 0){
-    pwm.setPWM(10, 0, map(in.right_front, 0, 800, 0, 4096));
+    pwm.setPWM(10, 0, map(in.right_front, 0, 800, 0, 4095));
     pwm.setPWM(11, 0, 0);
   }else{
     pwm.setPWM(10, 0, 0);
-    pwm.setPWM(11, 0, map(-in.right_front, 0, 800, 0, 4096));
+    pwm.setPWM(11, 0, map(-in.right_front, 0, 800, 0, 4095));
   }
 
   if(in.right_rear >= 0){
-    pwm.setPWM(8, 0, map(in.right_rear, 0, 800, 0, 4096));
+    pwm.setPWM(8, 0, map(in.right_rear, 0, 800, 0, 4095));
     pwm.setPWM(9, 0, 0);
   }else{
     pwm.setPWM(8, 0, 0);
-    pwm.setPWM(9, 0, map(-in.right_rear, 0, 800, 0, 4096));
+    pwm.setPWM(9, 0, map(-in.right_rear, 0, 800, 0, 4095));
   }
 }
 

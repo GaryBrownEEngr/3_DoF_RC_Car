@@ -177,7 +177,7 @@ Forward the packet to a message processor if the type is recognized.
 */
 void process_crsf_packet(uint8_t rx_buffer[], uint8_t len){
   if( len < 4) {
-    Serial.print("Message is too short\n");
+    //Serial.print("Message is too short\n");
     return;
   }
   crsf_packet_t p;
@@ -191,13 +191,13 @@ void process_crsf_packet(uint8_t rx_buffer[], uint8_t len){
       // Happy path. do nothing.
       break;
     default:
-      Serial.print("Unknown dest \n");
+      //Serial.print("Unknown dest \n");
       return;
   }
   
   p.len = rx_buffer[1];
   if(p.len < 2) {
-    Serial.print("given len is too small. \n");
+    //Serial.print("given len is too small. \n");
     return;
   }
   p.packet_len = p.len + 2;
@@ -206,7 +206,7 @@ void process_crsf_packet(uint8_t rx_buffer[], uint8_t len){
   p.type = rx_buffer[2];
 
   if(p.packet_len > len) {
-    Serial.print("message length is wrong. \n");
+    //Serial.print("message length is wrong. \n");
     return;
   }
 
@@ -214,10 +214,10 @@ void process_crsf_packet(uint8_t rx_buffer[], uint8_t len){
 
   uint8_t computed_crc = calc_elrs_crc8(&rx_buffer[2], len - 3);
   if(p.crc != computed_crc) {
-    Serial.print("crc doesn't match computed crc: ");
-    Serial.print(p.crc, 16);
-    Serial.print(" ");
-    Serial.println(computed_crc, 16);
+    //Serial.print("crc doesn't match computed crc: ");
+    //Serial.print(p.crc, 16);
+    //Serial.print(" ");
+    //Serial.println(computed_crc, 16);
     return;
   }
 
@@ -234,8 +234,8 @@ void process_crsf_packet(uint8_t rx_buffer[], uint8_t len){
   }else if(p.type == CRSF_FRAMETYPE_LINK_STATISTICS){
     process_crsf_link_statistics_message(&p);
   }else{
-    Serial.print("Packet type not expected: 0x");
-    Serial.println(p.type, 16);
+    //Serial.print("Packet type not expected: 0x");
+    //Serial.println(p.type, 16);
     print_crsf_packet(&p);
   }
   
@@ -333,8 +333,7 @@ void send_crsf_message(uint8_t dest, uint8_t type, uint8_t* payload, uint8_t pay
   uint8_t crc = calc_elrs_crc8(&buf[2], payload_len + 1);
   buf[3 + payload_len] = crc;
 
-  //memcpy(dest_buf, buf, payload_len + 4);
-  Serial1.write(buf, payload_len + 4);
+  Serial.write(buf, payload_len + 4);
 }
 
 

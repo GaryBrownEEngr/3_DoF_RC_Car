@@ -1,4 +1,5 @@
 // Requires the adafruit PWM Servo Driver Library to be installed.
+// https://www.arduino.cc/reference/en/
 
 #include <Wire.h>
 #include <Adafruit_PWMServoDriver.h>
@@ -33,8 +34,6 @@ void setup() {
   channel_commands.ch2 = 990;
   channel_commands.ch3 = 990;
 
-  pinMode(5, OUTPUT);
-  digitalWrite(5, HIGH);
 }
 
 /*
@@ -79,7 +78,6 @@ void loop() {
     // if we get a valid byte,
     while (Serial.available() > 0) {
       uint8_t in = Serial.read();
-      digitalWrite(5, LOW);
       //Serial.println(in, 16);
       search_for_packet(&packet_finder, in);
     }
@@ -88,7 +86,7 @@ void loop() {
     uint32_t new_time = millis();
     if( new_time > last_motor_update_time + 10){
       last_motor_update_time = new_time;
-      digitalWrite(5, HIGH);
+
       // Serial.print(channel_commands.ch0);
       // Serial.print(", ");
       // Serial.print(channel_commands.ch1);

@@ -236,7 +236,7 @@ void process_crsf_packet(uint8_t rx_buffer[], uint8_t len){
   }else{
     //Serial.print("Packet type not expected: 0x");
     //Serial.println(p.type, 16);
-    print_crsf_packet(&p);
+    //print_crsf_packet(&p);
   }
   
 }

@@ -82,6 +82,8 @@ void loop() {
 
 
   uint32_t last_motor_update_time = millis();
+  uint32_t last_buzzer_time = millis();
+  uint8_t buzzer_state = 0;
   while(1) {
     // if we get a valid byte,
     while (Serial.available() > 0) {
@@ -89,19 +91,28 @@ void loop() {
       //Serial.println(in, 16);
       search_for_packet(&packet_finder, in);
     }
-
-
-    if(motor_cmd.left_front == 0 && motor_cmd.left_rear == 0 && motor_cmd.right_front == 0 && motor_cmd.right_rear == 0 
-    && is_battery_low()){
-      tone(Buzzer_Pin, 300);
-      delay(250);
-      tone(Buzzer_Pin, 200);
-      delay(250);
-      noTone(Buzzer_Pin);
-      delay(500);
-    }
-    
     uint32_t new_time = millis();
+
+    if(buzzer_state == 0 && abs(motor_cmd.left_front) <= 200 && abs(motor_cmd.left_rear) <= 200 && abs(motor_cmd.right_front <= 200) && abs(motor_cmd.right_rear <= 200)
+    && is_battery_low()){
+      buzzer_state = 1;
+      last_buzzer_time = new_time;
+      tone(Buzzer_Pin, 300);
+    }
+    else if( buzzer_state == 1 && new_time - last_buzzer_time >= 250){
+      buzzer_state = 2;
+      last_buzzer_time = new_time;
+      tone(Buzzer_Pin, 200);
+    }
+    else if( buzzer_state == 2 && new_time - last_buzzer_time >= 250){
+      buzzer_state = 3;
+      last_buzzer_time = new_time;
+      noTone(Buzzer_Pin);
+    }
+    else if( buzzer_state == 3 && new_time - last_buzzer_time >= 500){
+      buzzer_state = 0;
+    }
+
     if( new_time > last_motor_update_time + 10){
       last_motor_update_time = new_time;
 

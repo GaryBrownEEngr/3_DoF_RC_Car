@@ -10,3 +10,9 @@ Arduino based Mecanum wheel robot with ExpressLRS RC link. Using a standard ardu
 ### ExpressLRS CRSF decoding
 All packet finding and decoding is performed by passing serial bytes to the `search_for_packet(...)` function.
 If a seemingly valid packet is found, it is passed to `process_crsf_packet(...)` where its CRC is checked, then it is processed by message type.
+
+## Second Car option
+
+[Amazon listing for OSOYOO car](https://www.amazon.com/OSOYOO-Omni-directinal-Controlled-Educational-Mechanical/dp/B0821DV5GJ)
+
+The code is located in ./largerRobot/Arduino_Code
